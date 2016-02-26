@@ -3,16 +3,25 @@ FROM debian:sid
 MAINTAINER Tristan Crockett <tristan.h.crockett@gmail.com>
 
 
-RUN apt-get update
-RUN apt-get install -y openjdk-8-jre wget
-RUN mkdir -p /var/otp
-RUN cd /var/otp
-RUN wget -S -nv -O /var/otp/otp.jar http://dev.opentripplanner.org/jars/otp-0.18.0.jar
+RUN \
+  apt-get update && \
+  apt-get install -y openjdk-8-jre wget
 
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
-ADD build.sh /root/
-RUN chmod +x /root/build.sh
+RUN mkdir -p /var/otp && wget -O /var/otp/otp.jar http://maven.conveyal.com.s3.amazonaws.com/org/opentripplanner/otp/0.19.0/otp-0.19.0-shaded.jar
 
-ENTRYPOINT [ "/root/build.sh" ]
+ENV OTP_BASE /var/otp
+ENV OTP_GRAPHS /var/otp/graphs
 
-CMD ['--help']
+RUN \
+  mkdir -p /var/otp/graphs && \
+  wget -P /var/otp/graphs http://www.transitchicago.com/downloads/sch_data/google_transit.zip && \
+  java -Xmx8G -jar /var/otp/otp.jar --build /var/otp/graphs
+
+EXPOSE 8080
+EXPOSE 8081
+
+ENTRYPOINT [ "java", "-Xmx6G", "-Xverify:none", "-jar", "/var/otp/otp.jar" ]
+
+CMD [ "--help" ]
