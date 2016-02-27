@@ -6,17 +6,19 @@ Clone the repo, cd into it
 ```
 docker-machine create --driver virtualbox cta-otp
 eval $(docker-machine env cta-otp)
-docker build -t cta-otp
+docker build -t cta-otp .
 ```
 
 Then, after it finishes, run
 `docker run -p 8080:8080 cta-otp --autoScan --server`
 
-Now it should be running at `localhost:8080`
+Open a separate terminal window and run `docker-machine ls` to get the IP address for the container
+
+Now you should be able to access it in your browser at `<INSERTIP>:8080`
 
 ## How to setup (Linux)
 Similar to the OSX instructions, but without the extra docker-machine steps at the beginning.
 ```
-docker build -t cta-otp
+docker build -t cta-otp .
 docker run -p 8080:8080 cta-otp --autoScan --server
 ```
