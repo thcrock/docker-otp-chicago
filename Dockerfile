@@ -17,6 +17,7 @@ ENV OTP_GRAPHS /var/otp/graphs
 RUN \
   mkdir -p /var/otp/graphs && \
   wget -P /var/otp/graphs http://www.transitchicago.com/downloads/sch_data/google_transit.zip && \
+  wget -P /var/otp/graphs https://s3.amazonaws.com/metro-extracts.mapzen.com/chicago_illinois.osm.pbf && \
   java -Xmx8G -jar /var/otp/otp.jar --build /var/otp/graphs
 
 EXPOSE 8080
