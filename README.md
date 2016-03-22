@@ -11,6 +11,10 @@ eval $(docker-machine env chicago-otp)
 docker build -t chicago-otp .
 ```
 
+Note that it will take 20-30 minutes the first time mainly because, in order to cover the full
+service area for the Metra, it has to download OSM data for Illinois and Wisconsin,
+and then take only the areas serviced by Metra.
+
 Then, after it finishes, run
 `docker run -p 80:8080 chicago-otp --router chicago --server`
 

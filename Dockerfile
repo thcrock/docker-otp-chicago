@@ -4,7 +4,7 @@ MAINTAINER Tristan Crockett <tristan.h.crockett@gmail.com>
 
 RUN \
   apt-get update && \
-  apt-get install -y openjdk-8-jre wget
+  apt-get install -y openjdk-8-jre wget osmosis
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
@@ -18,10 +18,22 @@ ENV OTP_GRAPHS /var/otp/graphs
 
 RUN \
   mkdir -p /var/otp/graphs/chicago && \
+  wget -O /var/otp/graphs/chicago/illinois.osm.pbf http://download.geofabrik.de/north-america/us/illinois-latest.osm.pbf && \
+  wget -O /var/otp/graphs/chicago/wisconsin.osm.pbf http://download.geofabrik.de/north-america/us/wisconsin-latest.osm.pbf
+
+RUN \
+  osmosis --read-pbf file=/var/otp/graphs/chicago/illinois.osm.pbf --bounding-box left=-88.9151 bottom=41.325264 --write-pbf /var/otp/graphs/chicago/illinois-metra.pbf && \
+  osmosis --read-pbf file=/var/otp/graphs/chicago/wisconsin.osm.pbf --bounding-box left=-88.073959 top=42.67032 --write-pbf /var/otp/graphs/chicago/kenosha-metra.pbf && \
+  rm /var/otp/graphs/chicago/illinois.osm.pbf && \
+  rm /var/otp/graphs/chicago/wisconsin.osm.pbf && \
+  osmosis --read-pbf file=/var/otp/graphs/chicago/illinois-metra.pbf --read-pbf file=/var/otp/graphs/chicago/kenosha-metra.pbf --merge --write-pbf /var/otp/graphs/chicago/chicago-metra.pbf && \
+  rm /var/otp/graphs/chicago/illinois-metra.pbf && \
+  rm /var/otp/graphs/chicago/kenosha-metra.pbf
+
+RUN \
   wget -O /var/otp/graphs/chicago/pace.zip http://www.pacebus.com/gtfs/gtfs.zip && \
   wget -O /var/otp/graphs/chicago/metra.zip http://transitfeeds.com/p/metra/169/latest/download && \
   wget -O /var/otp/graphs/chicago/cta.zip http://www.transitchicago.com/downloads/sch_data/google_transit.zip && \
-  wget -P /var/otp/graphs/chicago https://s3.amazonaws.com/metro-extracts.mapzen.com/chicago_illinois.osm.pbf && \
   java -Xmx8G -jar /var/otp/otp.jar --build /var/otp/graphs/chicago
 
 EXPOSE 8080
