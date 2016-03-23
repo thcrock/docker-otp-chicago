@@ -17,6 +17,7 @@ ENV OTP_BASE /var/otp
 ENV OTP_GRAPHS /var/otp/graphs
 
 RUN \
+  mkdir -p /var/otp/scripting && \
   mkdir -p /var/otp/graphs/chicago && \
   wget -O /var/otp/graphs/chicago/pace.zip http://www.pacebus.com/gtfs/gtfs.zip && \
   wget -O /var/otp/graphs/chicago/metra.zip http://transitfeeds.com/p/metra/169/latest/download && \
