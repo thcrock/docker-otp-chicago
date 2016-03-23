@@ -47,10 +47,10 @@ In your script file, if you refer to any synced data (i.e. a population data CSV
 for transportation analysis), you'll need to refer to the full file path on the
 Docker container and not your host machine.
 
-So if you would run `otp.loadCSVPopulation(/Users/me/test.csv)` in a Jython script,
-you would have to change this to `otp.loadCSVPopulation(/var/otp/scripting/test.csv)`.
-The same goes for output files, which means that `testCsv.save(/Users/me/test_output.csv)`
-would become `testCsv.save(/var/otp/scripting/test_output.csv)`.
+So if you would run `otp.loadCSVPopulation("/Users/me/test.csv")` in a Jython script,
+you would have to change this to `otp.loadCSVPopulation("/var/otp/scripting/test.csv")`.
+The same goes for output files, which means that `testCsv.save("/Users/me/test_output.csv")`
+would become `testCsv.save("/var/otp/scripting/test_output.csv")`.
 
 The output file will show up in your host machine at the location of the synced volume
 as well as in the location in the container.
